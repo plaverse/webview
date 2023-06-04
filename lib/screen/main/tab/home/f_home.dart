@@ -5,6 +5,7 @@ import 'package:fast_app_base/common/widget/w_round_button.dart';
 import 'package:fast_app_base/screen/dialog/d_message.dart';
 import 'package:fast_app_base/screen/webview/browser_in_app_webview.dart' as in_app_webview;
 import 'package:fast_app_base/screen/webview/browser_webview_flutter.dart' as webview_flutter;
+import 'package:fast_app_base/screen/webview/example.dart';
 import 'package:flutter/material.dart';
 
 import '../../../dialog/d_color_bottom.dart';
@@ -47,6 +48,12 @@ class HomeFragment extends StatelessWidget {
           RoundButton(
             text: 'Message 다이얼로그',
             onTap: showMessageDialog,
+            theme: RoundButtonTheme.whiteWithBlueBorder,
+          ),
+          const Height(20),
+          RoundButton(
+            text: 'webview example',
+            onTap: () => Nav.push(const WebViewExample()),
             theme: RoundButtonTheme.whiteWithBlueBorder,
           ),
           const Height(20),
