@@ -6,6 +6,7 @@ import 'package:fast_app_base/screen/dialog/d_message.dart';
 import 'package:fast_app_base/screen/webview/browser_in_app_webview.dart' as in_app_webview;
 import 'package:fast_app_base/screen/webview/browser_webview_flutter.dart' as webview_flutter;
 import 'package:fast_app_base/screen/webview/example.dart';
+import 'package:fast_app_base/screen/webview/notice.dart';
 import 'package:flutter/material.dart';
 
 import '../../../dialog/d_color_bottom.dart';
@@ -70,6 +71,12 @@ class HomeFragment extends StatelessWidget {
           ),
           const Height(20),
           RoundButton(
+            text: 'webview 공지사항',
+            onTap: () => Nav.push(const Notice()),
+            theme: RoundButtonTheme.whiteWithBlueBorder,
+          ),
+          const Height(20),
+          RoundButton(
             text: '메뉴 보기',
             onTap: () => openDrawer(context),
             theme: RoundButtonTheme.blink,
@@ -121,11 +128,13 @@ class HomeFragment extends StatelessWidget {
   }
 
   Future<void> _showBrowserWebViewFlutter() async {
-    return Nav.pushFromBottom(const webview_flutter.Browser(url: 'https://fastcampus.co.kr/dev_online_dartflutter'));
+    return Nav.pushFromBottom(
+        const webview_flutter.Browser(url: 'https://fastcampus.co.kr/dev_online_dartflutter'));
   }
 
   Future<void> _showBrowserInAppWebView() async {
-    return Nav.pushFromBottom(const in_app_webview.Browser(url: 'https://fastcampus.co.kr/dev_online_dartflutter'));
+    return Nav.pushFromBottom(
+        const in_app_webview.Browser(url: 'https://fastcampus.co.kr/dev_online_dartflutter'));
   }
 
   void openDrawer(BuildContext context) {
