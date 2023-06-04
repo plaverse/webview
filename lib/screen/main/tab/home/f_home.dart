@@ -3,6 +3,7 @@ import 'package:fast_app_base/common/widget/round_button_theme.dart';
 import 'package:fast_app_base/common/widget/w_empty_expanded.dart';
 import 'package:fast_app_base/common/widget/w_round_button.dart';
 import 'package:fast_app_base/screen/dialog/d_message.dart';
+import 'package:fast_app_base/screen/webview/browser_in_app_webview.dart' as in_app_webview;
 import 'package:flutter/material.dart';
 
 import '../../../dialog/d_color_bottom.dart';
@@ -45,6 +46,12 @@ class HomeFragment extends StatelessWidget {
           RoundButton(
             text: 'Message 다이얼로그',
             onTap: showMessageDialog,
+            theme: RoundButtonTheme.whiteWithBlueBorder,
+          ),
+          const Height(20),
+          RoundButton(
+            text: '인앱브라우저',
+            onTap: showBrowser,
             theme: RoundButtonTheme.whiteWithBlueBorder,
           ),
           const Height(20),
@@ -97,6 +104,10 @@ class HomeFragment extends StatelessWidget {
   Future<void> showMessageDialog() async {
     final result = await MessageDialog("안녕하세요").show();
     debugPrint(result.toString());
+  }
+
+  Future<void> showBrowser() async {
+    return Nav.pushFromBottom(const in_app_webview.Browser(url: 'https://fastcampus.co.kr/dev_online_dartflutter'));
   }
 
   void openDrawer(BuildContext context) {
