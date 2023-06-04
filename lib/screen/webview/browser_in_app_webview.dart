@@ -66,6 +66,7 @@ class _BrowserState extends State<Browser> {
                           crossPlatform: InAppWebViewOptions(
                             javaScriptEnabled: true,
                             javaScriptCanOpenWindowsAutomatically: true,
+                            useShouldOverrideUrlLoading: true,
                           ),
                           ios: IOSInAppWebViewOptions(
                             allowsInlineMediaPlayback: true,
@@ -73,6 +74,7 @@ class _BrowserState extends State<Browser> {
                             sharedCookiesEnabled: true,
                           ),
                         ),
+                        shouldOverrideUrlLoading: _navigationActionPolicy,
                         onWebViewCreated: (controller) {
                           webView = controller;
                         },
@@ -281,5 +283,11 @@ class _BrowserState extends State<Browser> {
     } else {
       await MessageDialog('해당 url 은 열 수 없습니다.').show();
     }
+  }
+
+  Future<NavigationActionPolicy?> _navigationActionPolicy(
+      InAppWebViewController controller, NavigationAction navigationAction) async {
+    debugPrint('url: ${navigationAction.request.url}, isForMainFrame: ${navigationAction.isForMainFrame}');
+    return NavigationActionPolicy.ALLOW;
   }
 }
