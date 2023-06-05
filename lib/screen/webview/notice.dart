@@ -113,6 +113,7 @@ Page resource error:
       (_controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
 
+    /// TODO: http://example.com
     _controller.loadRequest(Uri.parse('https://fastcampus.co.kr/info/notices'));
   }
 
@@ -124,7 +125,6 @@ Page resource error:
   @override
   Widget build(BuildContext context) {
     return ConditionalWillPopScope(
-
       /// TODO: onWillPop
       onWillPop: () => _willPop(),
       shouldAddCallback: !Platform.isIOS,
