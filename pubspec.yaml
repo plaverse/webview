@@ -74,6 +74,8 @@ dependencies:
   #ui - util
   keyboard_utils_fork: ^0.0.4
   url_launcher: ^6.1.11
+  fk_user_agent: ^2.1.0
+  package_info_plus: ^4.0.2
 
   #network
   dio: ^5.0.0

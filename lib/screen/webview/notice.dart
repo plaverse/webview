@@ -1,6 +1,8 @@
 import 'package:fast_app_base/common/widget/loading.dart';
+import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -36,13 +38,9 @@ class _NoticeState extends State<Notice> {
   void initState() {
     super.initState();
     _initializeWebViewController();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.loadRequest(Uri.parse('https://fastcampus.co.kr/info/notices'));
-    });
   }
 
-  void _initializeWebViewController() {
+  Future<void> _initializeWebViewController() async {
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -54,10 +52,10 @@ class _NoticeState extends State<Notice> {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
+    _controller = WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
-    controller
+    _controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
@@ -92,14 +90,20 @@ Page resource error:
         ),
       );
 
+    /// User-Agent
+    await FkUserAgent.init();
+    final packageInfo = await PackageInfo.fromPlatform();
+    await _controller
+        .setUserAgent('${FkUserAgent.webViewUserAgent} fastcampus(${packageInfo.version})');
+
     // #docregion platform_features
-    if (controller.platform is AndroidWebViewController) {
+    if (_controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
+      (_controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     // #enddocregion platform_features
 
-    _controller = controller;
+    _controller.loadRequest(Uri.parse('https://fastcampus.co.kr/info/notices'));
   }
 
   @override
