@@ -75,6 +75,7 @@ class _NoticeState extends State<Notice> {
           onPageFinished: (String url) {
             debugPrint('Page finished loading: $url');
 
+            /// TODO: mounted
             if (mounted) {
               setState(() {
                 _isShowLoadingIndicator = false;
@@ -100,7 +101,7 @@ Page resource error:
         ),
       );
 
-    /// User-Agent
+    /// TODO: User-Agent
     await FkUserAgent.init();
     final packageInfo = await PackageInfo.fromPlatform();
     await _controller
@@ -111,7 +112,6 @@ Page resource error:
       AndroidWebViewController.enableDebugging(true);
       (_controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
-    // #enddocregion platform_features
 
     _controller.loadRequest(Uri.parse('https://fastcampus.co.kr/info/notices'));
   }
@@ -124,6 +124,8 @@ Page resource error:
   @override
   Widget build(BuildContext context) {
     return ConditionalWillPopScope(
+
+      /// TODO: onWillPop
       onWillPop: () => _willPop(),
       shouldAddCallback: !Platform.isIOS,
       child: AnnotatedRegion(
@@ -140,6 +142,7 @@ Page resource error:
             leading: BackButton(
               color: Colors.black87,
               onPressed: () {
+                /// TODO: why? Nav.pop
                 Nav.pop(context);
               },
             ),
@@ -166,7 +169,7 @@ Page resource error:
 
     /// 고객센터 바로가기
     /// 외부 브라우저로 처리
-    /// 1번
+    /// TODO: navigation decision 1번
     if (uri.host.contains('day1fastcampussupport.zendesk.com')) {
       launchUrl(
         uri,
@@ -176,7 +179,7 @@ Page resource error:
       return NavigationDecision.prevent;
     }
 
-    /// 2번
+    /// TODO: navigation decision 2번
     // for (final decision in decisions) {
     //   if (decision.isMatch(uri)) {
     //     return decision.decide(context, _controller, uri, isMainFrame);
@@ -187,6 +190,7 @@ Page resource error:
   }
 
   Future<bool> _willPop() async {
+    /// TODO: OS 별 분기 처리
     if (Platform.isIOS) {
       return true;
     } else if (Platform.isAndroid) {
