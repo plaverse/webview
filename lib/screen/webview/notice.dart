@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
+import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/widget/loading.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:flutter/material.dart';
@@ -62,16 +66,20 @@ class _NoticeState extends State<Notice> {
         NavigationDelegate(
           onPageStarted: (String url) {
             debugPrint('Page started loading: $url');
-            setState(() {
-              _isShowLoadingIndicator = true;
-            });
+            if (mounted) {
+              setState(() {
+                _isShowLoadingIndicator = true;
+              });
+            }
           },
           onPageFinished: (String url) {
             debugPrint('Page finished loading: $url');
 
-            setState(() {
-              _isShowLoadingIndicator = false;
-            });
+            if (mounted) {
+              setState(() {
+                _isShowLoadingIndicator = false;
+              });
+            }
           },
           onWebResourceError: (WebResourceError error) {
             debugPrint('''
@@ -82,9 +90,11 @@ Page resource error:
   isForMainFrame: ${error.isForMainFrame}
           ''');
 
-            setState(() {
-              _isShowLoadingIndicator = false;
-            });
+            if (mounted) {
+              setState(() {
+                _isShowLoadingIndicator = false;
+              });
+            }
           },
           onNavigationRequest: _navigationDecision,
         ),
@@ -113,29 +123,36 @@ Page resource error:
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion(
-      value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('공지사항'),
-          titleTextStyle: const TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
-          leading: const BackButton(
-            color: Colors.black87,
-          ),
+    return ConditionalWillPopScope(
+      onWillPop: () => _willPop(),
+      shouldAddCallback: !Platform.isIOS,
+      child: AnnotatedRegion(
+        value: SystemUiOverlayStyle.dark,
+        child: Scaffold(
           backgroundColor: Colors.white,
-          elevation: 1,
-          // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
-        ),
-        body: Stack(
-          children: <Widget>[
-            WebViewWidget(controller: _controller),
-            if (_isShowLoadingIndicator) LoadingIndicator.small(),
-          ],
+          appBar: AppBar(
+            title: const Text('공지사항'),
+            titleTextStyle: const TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+            leading: BackButton(
+              color: Colors.black87,
+              onPressed: () {
+                Nav.pop(context);
+              },
+            ),
+            backgroundColor: Colors.white,
+            elevation: 1,
+            // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
+          ),
+          body: Stack(
+            children: <Widget>[
+              WebViewWidget(controller: _controller),
+              if (_isShowLoadingIndicator) LoadingIndicator.small(),
+            ],
+          ),
         ),
       ),
     );
@@ -167,5 +184,21 @@ Page resource error:
     // }
 
     return NavigationDecision.navigate;
+  }
+
+  Future<bool> _willPop() async {
+    if (Platform.isIOS) {
+      return true;
+    } else if (Platform.isAndroid) {
+      final canGoBack = await _controller.canGoBack();
+      if (canGoBack) {
+        _controller.goBack();
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    return true;
   }
 }

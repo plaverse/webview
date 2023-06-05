@@ -70,6 +70,7 @@ dependencies:
   cached_network_image: ^3.2.3
   webview_flutter: ^4.2.1
   flutter_inappwebview: ^5.7.2+3
+  cupertino_will_pop_scope: ^1.2.1
 
   #ui - util
   keyboard_utils_fork: ^0.0.4
