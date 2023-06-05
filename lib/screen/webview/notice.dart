@@ -1,7 +1,7 @@
 import 'package:fast_app_base/common/widget/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // ignore: depend_on_referenced_packages
@@ -9,6 +9,8 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+
+import 'navigation_decision.dart';
 
 class Notice extends StatefulWidget {
   const Notice({
@@ -22,6 +24,10 @@ class Notice extends StatefulWidget {
 
 class _NoticeState extends State<Notice> {
   late final WebViewController _controller;
+
+  final List<UrlNavigationDecision> decisions = [
+    CustomerServiceDecision(),
+  ];
 
   double progress = 0;
   bool _isShowLoadingIndicator = true;
@@ -132,18 +138,29 @@ Page resource error:
   }
 
   Future<NavigationDecision> _navigationDecision(NavigationRequest request) async {
-    debugPrint('url: ${request.url}, isForMainFrame: ${request.isMainFrame}');
+    final uri = Uri.parse(request.url);
+    final bool isMainFrame = request.isMainFrame;
+
+    debugPrint('url: $uri, isForMainFrame: $isMainFrame');
 
     /// 고객센터 바로가기
     /// 외부 브라우저로 처리
-    if (request.url.startsWith('https://day1fastcampussupport.zendesk.com')) {
-      launchUrlString(
-        request.url,
+    /// 1번
+    if (uri.host.contains('day1fastcampussupport.zendesk.com')) {
+      launchUrl(
+        uri,
         mode: LaunchMode.externalApplication,
       );
 
       return NavigationDecision.prevent;
     }
+
+    /// 2번
+    // for (final decision in decisions) {
+    //   if (decision.isMatch(uri)) {
+    //     return decision.decide(context, _controller, uri, isMainFrame);
+    //   }
+    // }
 
     return NavigationDecision.navigate;
   }
