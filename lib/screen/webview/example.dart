@@ -82,6 +82,8 @@ const String kTransparentBackgroundPage = '''
   </html>
 ''';
 
+/// Part4
+/// https://github.com/fastcampus-flutter/Part4_webview
 class WebViewExample extends StatefulWidget {
   const WebViewExample({super.key});
 

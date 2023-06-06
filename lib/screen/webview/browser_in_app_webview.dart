@@ -16,7 +16,7 @@ class Browser extends StatefulWidget {
   const Browser({
     Key? key,
     required this.url,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -24,9 +24,9 @@ class Browser extends StatefulWidget {
 }
 
 class _BrowserState extends State<Browser> {
-  InAppWebViewController? webView;
+  InAppWebViewController? _webView;
   Uri? _uri;
-  double progress = 0;
+  double _progress = 0;
   bool _isShowLoadingIndicator = true;
 
   @override
@@ -68,6 +68,8 @@ class _BrowserState extends State<Browser> {
                             javaScriptCanOpenWindowsAutomatically: true,
                             useShouldOverrideUrlLoading: true,
                           ),
+
+                          /// TODO: IOSInAppWebViewOptions
                           ios: IOSInAppWebViewOptions(
                             allowsInlineMediaPlayback: true,
                             allowsLinkPreview: false,
@@ -76,12 +78,14 @@ class _BrowserState extends State<Browser> {
                         ),
                         shouldOverrideUrlLoading: _navigationActionPolicy,
                         onWebViewCreated: (controller) {
-                          webView = controller;
+                          _webView = controller;
                         },
                         onLoadStart: (controller, url) {
+                          debugPrint('onLoadStart url: $url');
                           _uri = url;
                         },
                         onLoadStop: (controller, url) {
+                          debugPrint('onLoadStop url: $url');
                           _uri = url;
                           if (_isShowLoadingIndicator) {
                             setState(() {
@@ -89,9 +93,19 @@ class _BrowserState extends State<Browser> {
                             });
                           }
                         },
+                        onLoadError: (controller, url, code, message) {
+                          debugPrint('onLoadError url: $url, code: $code, message: $message');
+
+                          if (_isShowLoadingIndicator) {
+                            setState(() {
+                              _isShowLoadingIndicator = false;
+                            });
+                          }
+                        },
                         onProgressChanged: (controller, progress) {
+                          debugPrint('onProgressChanged progress: $progress');
                           setState(() {
-                            this.progress = progress / 100;
+                            _progress = progress / 100;
                           });
                         },
                       ),
@@ -119,10 +133,10 @@ class _BrowserState extends State<Browser> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         SizedBox(
-          height: progress < 1.0 ? 4 : 0,
-          child: progress < 1.0
+          height: _progress < 1.0 ? 4 : 0,
+          child: _progress < 1.0
               ? LinearProgressIndicator(
-                  value: progress,
+                  value: _progress,
                 )
               : Container(),
         ),
@@ -147,18 +161,18 @@ class _BrowserState extends State<Browser> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       FutureBuilder<bool>(
-                        future: webView?.canGoBack() ?? Future.value(false),
+                        future: _webView?.canGoBack() ?? Future.value(false),
                         builder: (context, snapshot) {
-                          final isCan = snapshot.data ?? false;
+                          final canGoBack = snapshot.data ?? false;
                           return Opacity(
-                            opacity: isCan ? 1.0 : 0.3,
+                            opacity: canGoBack ? 1.0 : 0.3,
                             child: IgnorePointer(
-                              ignoring: !isCan,
+                              ignoring: !canGoBack,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTap: isCan
+                                onTap: canGoBack
                                     ? () {
-                                        webView?.goBack();
+                                        _webView?.goBack();
                                       }
                                     : null,
                                 child: Container(
@@ -178,18 +192,18 @@ class _BrowserState extends State<Browser> {
                         },
                       ),
                       FutureBuilder<bool>(
-                        future: webView?.canGoForward() ?? Future.value(false),
+                        future: _webView?.canGoForward() ?? Future.value(false),
                         builder: (context, snapshot) {
-                          final isCan = snapshot.data ?? false;
+                          final canGoForward = snapshot.data ?? false;
                           return Opacity(
-                            opacity: isCan ? 1.0 : 0.3,
+                            opacity: canGoForward ? 1.0 : 0.3,
                             child: IgnorePointer(
-                              ignoring: !isCan,
+                              ignoring: !canGoForward,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTap: isCan
+                                onTap: canGoForward
                                     ? () {
-                                        webView?.goForward();
+                                        _webView?.goForward();
                                       }
                                     : null,
                                 child: Container(
@@ -222,8 +236,8 @@ class _BrowserState extends State<Browser> {
                           ),
                         ),
                         onTap: () {
-                          if (webView != null) {
-                            webView!.reload();
+                          if (_webView != null) {
+                            _webView!.reload();
                           }
                         },
                       ),
@@ -242,7 +256,7 @@ class _BrowserState extends State<Browser> {
                             ),
                             child: Icon(
                               Platform.isIOS ? FontAwesomeIcons.safari : FontAwesomeIcons.chrome,
-                              color: context.isDarkMode ? Colors.white: Colors.black54 ,
+                              color: context.isDarkMode ? Colors.white : Colors.black54,
                               size: 19,
                             ),
                           ),
@@ -287,7 +301,8 @@ class _BrowserState extends State<Browser> {
 
   Future<NavigationActionPolicy?> _navigationActionPolicy(
       InAppWebViewController controller, NavigationAction navigationAction) async {
-    debugPrint('url: ${navigationAction.request.url}, isForMainFrame: ${navigationAction.isForMainFrame}');
+    debugPrint(
+        'url: ${navigationAction.request.url}, isForMainFrame: ${navigationAction.isForMainFrame}');
     return NavigationActionPolicy.ALLOW;
   }
 }
