@@ -74,7 +74,6 @@ class _NoticeState extends State<Notice> {
           onPageFinished: (String url) {
             debugPrint('Page finished loading: $url');
 
-            /// TODO: mounted
             if (mounted) {
               setState(() {
                 _isShowLoadingIndicator = false;
@@ -107,6 +106,10 @@ Page resource error:
         .setUserAgent('${FkUserAgent.webViewUserAgent} fastcampus(${packageInfo.version})');
 
     /// TODO: http://example.com
+    /// iOS - NSAppTransportSecurity
+    /// android - usesCleartextTraffic, networkSecurityConfig
+    // _controller.loadRequest(Uri.parse('http://example.com'));
+
     _controller.loadRequest(Uri.parse('https://fastcampus.co.kr/info/notices'));
   }
 
