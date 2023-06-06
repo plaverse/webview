@@ -7,8 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
@@ -20,7 +22,7 @@ class Browser extends StatefulWidget {
   const Browser({
     Key? key,
     required this.url,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -47,14 +49,12 @@ class _BrowserState extends State<Browser> {
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
       );
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller =
-    WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller
@@ -106,16 +106,14 @@ Page resource error:
         },
       );
 
-    if (_uri!= null) {
+    if (_uri != null) {
       controller.loadRequest(_uri!);
     }
-
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
+      (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     // #enddocregion platform_features
 
@@ -144,13 +142,15 @@ Page resource error:
                 Column(
                   children: <Widget>[
                     Expanded(
-                      child:  WebViewWidget(controller: _controller),
+                      child: WebViewWidget(controller: _controller),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).padding.bottom + 50.0,
                     ),
                   ],
                 ),
+
+                /// TODO: LoadingIndicator
                 if (_isShowLoadingIndicator) LoadingIndicator.small(),
               ],
             ),
@@ -161,6 +161,7 @@ Page resource error:
     );
   }
 
+  /// TODO: BottomSheet
   Widget _buildBottomSheet(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final theme = context.theme;
@@ -168,6 +169,7 @@ Page resource error:
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+        /// TODO: Progress Indicator
         SizedBox(
           height: progress < 1.0 ? 4 : 0,
           child: progress < 1.0
@@ -196,6 +198,7 @@ Page resource error:
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      /// TODO: FutureBuilder
                       FutureBuilder<bool>(
                         future: _controller.canGoBack(),
                         builder: (context, snapshot) {
@@ -208,7 +211,7 @@ Page resource error:
                                 behavior: HitTestBehavior.translucent,
                                 onTap: isCan
                                     ? () {
-                                  _controller.goBack();
+                                        _controller.goBack();
                                       }
                                     : null,
                                 child: Container(
@@ -239,7 +242,7 @@ Page resource error:
                                 behavior: HitTestBehavior.translucent,
                                 onTap: isCan
                                     ? () {
-                                  _controller.goForward();
+                                        _controller.goForward();
                                       }
                                     : null,
                                 child: Container(
@@ -290,7 +293,7 @@ Page resource error:
                             ),
                             child: Icon(
                               Platform.isIOS ? FontAwesomeIcons.safari : FontAwesomeIcons.chrome,
-                              color: context.isDarkMode ? Colors.white: Colors.black54 ,
+                              color: context.isDarkMode ? Colors.white : Colors.black54,
                               size: 19,
                             ),
                           ),

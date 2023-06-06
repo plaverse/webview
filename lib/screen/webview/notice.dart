@@ -50,7 +50,6 @@ class _NoticeState extends State<Notice> {
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
       );
     } else {
       params = const PlatformWebViewControllerCreationParams();
@@ -106,12 +105,6 @@ Page resource error:
     final packageInfo = await PackageInfo.fromPlatform();
     await _controller
         .setUserAgent('${FkUserAgent.webViewUserAgent} fastcampus(${packageInfo.version})');
-
-    // #docregion platform_features
-    if (_controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (_controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
-    }
 
     /// TODO: http://example.com
     _controller.loadRequest(Uri.parse('https://fastcampus.co.kr/info/notices'));

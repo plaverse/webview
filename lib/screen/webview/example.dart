@@ -10,13 +10,16 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
 // #docregion platform_imports
 // Import for Android features.
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+
 // Import for iOS features.
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -93,25 +96,25 @@ class _WebViewExampleState extends State<WebViewExample> {
   void initState() {
     super.initState();
 
-    // #docregion platform_features
+    /// TODO: OS Platform features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+        // mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
       );
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller =
-    WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
+        /// TODO: NavigationDelegate
         NavigationDelegate(
           onProgress: (int progress) {
             debugPrint('WebView is loading (progress : $progress%)');
@@ -132,6 +135,7 @@ Page resource error:
           ''');
           },
           onNavigationRequest: (NavigationRequest request) {
+            /// TODO: NavigationDecision
             if (request.url.startsWith('https://www.youtube.com/')) {
               debugPrint('blocking navigation to ${request.url}');
               return NavigationDecision.prevent;
@@ -144,6 +148,8 @@ Page resource error:
           },
         ),
       )
+
+      /// TODO: addJavaScriptChannel
       ..addJavaScriptChannel(
         'Toaster',
         onMessageReceived: (JavaScriptMessage message) {
@@ -157,8 +163,7 @@ Page resource error:
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
+      (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     // #enddocregion platform_features
 
@@ -182,6 +187,7 @@ Page resource error:
     );
   }
 
+  /// TODO: Widget
   Widget favoriteButton() {
     return FloatingActionButton(
       onPressed: () async {
@@ -274,6 +280,8 @@ class SampleMenu extends StatelessWidget {
           value: MenuOptions.showUserAgent,
           child: Text('Show user agent'),
         ),
+
+        /// TODO: Cookies
         const PopupMenuItem<MenuOptions>(
           value: MenuOptions.listCookies,
           child: Text('List cookies'),
@@ -330,14 +338,15 @@ class SampleMenu extends StatelessWidget {
   Future<void> _onShowUserAgent() {
     // Send a message with the user agent string to the Toaster JavaScript channel we registered
     // with the WebView.
+    /// TODO: User-Agent
     return webViewController.runJavaScript(
       'Toaster.postMessage("User Agent: " + navigator.userAgent);',
     );
   }
 
   Future<void> _onListCookies(BuildContext context) async {
-    final String cookies = await webViewController
-        .runJavaScriptReturningResult('document.cookie') as String;
+    final String cookies =
+        await webViewController.runJavaScriptReturningResult('document.cookie') as String;
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Column(
@@ -365,7 +374,7 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onListCache() {
     return webViewController.runJavaScript('caches.keys()'
-    // ignore: missing_whitespace_between_adjacent_strings
+        // ignore: missing_whitespace_between_adjacent_strings
         '.then((cacheKeys) => JSON.stringify({"cacheKeys" : cacheKeys, "localStorage" : localStorage}))'
         '.then((caches) => Toaster.postMessage(caches))');
   }
@@ -447,8 +456,7 @@ class SampleMenu extends StatelessWidget {
       return Container();
     }
     final List<String> cookieList = cookies.split(';');
-    final Iterable<Text> cookieWidgets =
-    cookieList.map((String cookie) => Text(cookie));
+    final Iterable<Text> cookieWidgets = cookieList.map((String cookie) => Text(cookie));
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -458,8 +466,7 @@ class SampleMenu extends StatelessWidget {
 
   static Future<String> _prepareLocalFile() async {
     final String tmpDir = (await getTemporaryDirectory()).path;
-    final File indexFile = File(
-        <String>{tmpDir, 'www', 'index.html'}.join(Platform.pathSeparator));
+    final File indexFile = File(<String>{tmpDir, 'www', 'index.html'}.join(Platform.pathSeparator));
 
     await indexFile.create(recursive: true);
     await indexFile.writeAsString(kLocalExamplePage);
@@ -468,6 +475,7 @@ class SampleMenu extends StatelessWidget {
   }
 }
 
+/// TODO: NavigationControls
 class NavigationControls extends StatelessWidget {
   const NavigationControls({super.key, required this.webViewController});
 
