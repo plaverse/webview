@@ -11,9 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // ignore: depend_on_referenced_packages
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-
-// ignore: depend_on_referenced_packages
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import 'navigation_decision.dart';
@@ -31,11 +28,10 @@ class Notice extends StatefulWidget {
 class _NoticeState extends State<Notice> {
   late final WebViewController _controller;
 
-  final List<UrlNavigationDecision> decisions = [
+  final List<UrlNavigationDecision> _decisions = [
     CustomerServiceDecision(),
   ];
 
-  double progress = 0;
   bool _isShowLoadingIndicator = true;
 
   @override
@@ -176,7 +172,7 @@ Page resource error:
     }
 
     /// TODO: navigation decision 2번
-    // for (final decision in decisions) {
+    // for (final decision in _decisions) {
     //   if (decision.isMatch(uri)) {
     //     return decision.decide(context, _controller, uri, isMainFrame);
     //   }
