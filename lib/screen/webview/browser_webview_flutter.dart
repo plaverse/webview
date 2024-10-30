@@ -329,7 +329,7 @@ Page resource error:
     if (_uri != null && await canLaunchUrl(_uri!)) {
       await launchUrl(
         _uri!,
-        mode: LaunchMode.externalApplication,
+        mode: LaunchMode.inAppWebView,
       );
     } else {
       await MessageDialog('해당 url 은 열 수 없습니다.').show();
